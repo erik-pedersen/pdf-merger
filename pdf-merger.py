@@ -17,9 +17,13 @@ try:
 except ModuleNotFoundError:
     print("Could not find PyPDF2 on your machine.")
     print("Try running:")
+    print("    $ python3 -m venv venv")
     print("    $ source venv/bin/activate")
+    print("    $ pip install PyPDF2")
     print("and after using pdf-merger, run")
     print("    $ deactivate")
+    print("You can then delete the venv directory if you wish.")
+    print("rm -rf ./venv")
     exit(1)
 
 merger = PyPDF2.PdfMerger()
@@ -34,11 +38,16 @@ try:
 except ValueError:
     pass
 
+import os
 for file in sys.argv:
-    if sys.argv.index(file) == index + 1:
+    if sys.argv.index(file) == index + 1 or file == "-o":
         continue
     if file.endswith(".pdf"):
         merger.append(file)
+    if not os.path.isfile(file):
+        print(f"File not found: {file}")
+        exit(1)
+
 
 try:
     index = sys.argv.index("-o")
